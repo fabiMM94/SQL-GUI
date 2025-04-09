@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import urllib
 import pyodbc
-# ,sdjhcbzsd
+
 # -------------------------------
 # Configuración de la conexión
 # -------------------------------

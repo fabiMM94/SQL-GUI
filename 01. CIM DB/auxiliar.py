@@ -87,3 +87,33 @@ if st.button("Guardar cambios en SQL Server"):
 # Mostrar tabla actual
 st.subheader("Vista actual de la tabla")
 st.dataframe(st.session_state["df_editada"], use_container_width=True)
+
+
+#import streamlit as st
+#import pandas as pd
+#import pyodbc 
+#from sqlalchemy import create_engine, text
+
+# who_is = "Cris2"
+# users = {
+#     "Cris1": ["test_access", "CBARRERA29N7\\SQLEXPRESS"],
+#     "Cris2": ["test_access", "NB-CD-DEE2"]
+# }
+# user = users[who_is]
+ 
+# DB_NAME = user[0]
+# SERVER_NAME = user[1]
+# usuario = "Fabi.fabi"
+# contrasena = "Fabifabiño123_-@sjk,chba<siclawr83746rq3efdqwl.kjsh!!!!"
+# try:
+#    conn = pyodbc.connect(
+#     f"Driver={{ODBC Driver 17 for SQL Server}};"
+#     f"Server={SERVER_NAME};"
+#     f"Database={DB_NAME};"
+#     f"UID={usuario};"
+#     f"PWD={contrasena};"
+#     )
+# except Exception as e:
+#         print(f"Error al ejecutar query: {e}")
+#         st.error(f"❌ Error al ejecutar query: {e}")
+#         return pd.DataFrame()   

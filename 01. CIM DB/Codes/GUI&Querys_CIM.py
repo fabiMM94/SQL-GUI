@@ -6,6 +6,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import create_engine, Column, Integer, Float, ForeignKey, text, Table, MetaData
 
+
+jhjhjh
+
 # Configuración de página de Streamlit
 st.set_page_config(page_title="Editor de Datos SQL Server", layout="wide")
 st.title("Editor de Datos SQL Server")

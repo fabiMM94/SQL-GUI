@@ -1,0 +1,24 @@
+# -------------------------------
+# Configuración de querys
+# -------------------------------
+
+# GetAllComponents = """SELECT ComponentT.ComponentName, PowerStationT.PowerStationName, CompanyT.CompanyName 
+#                    FROM CompanyT INNER JOIN (PowerStationT INNER JOIN ComponentT ON PowerStationT.PowerStationID = ComponentT.PowerStationID) ON CompanyT.CompanyID = PowerStationT.MarketParticipantID
+#                    ORDER BY ComponentT.ComponentID;"""
+# GetAllGenerators = """SELECT ComponentT.ComponentName, PowerStationT.PowerStationName, CompanyT.CompanyName
+#                     FROM CompanyT INNER JOIN (PowerStationT INNER JOIN ComponentT ON PowerStationT.PowerStationID = ComponentT.PowerStationID) ON CompanyT.CompanyID = PowerStationT.MarketParticipantID
+#                     WHERE (((ComponentT.ComponentTypeID)=1))
+#                     ORDER BY ComponentT.ComponentID;"""
+# ReceivedLetter = """SELECT SentLetterT.Correlativo
+#                 FROM ReceivedLetterT INNER JOIN (SentLetterT INNER JOIN SentLetterAnswersToT ON SentLetterT.SentLetterID = SentLetterAnswersToT.SentLetterID) ON ReceivedLetterT.ReceivedLetterID = SentLetterAnswersToT.AnswersToID
+#                 WHERE (((ReceivedLetterT.Correlativo)=[Forms]![ReceivedLetterF]![txtBoxCorrelativo]));"""
+# SentLetter = """SELECT ReceivedLetterT.Correlativo
+#                 FROM SentLetterT INNER JOIN (ReceivedLetterT INNER JOIN ReceivedLetterAnswersToT ON ReceivedLetterT.ReceivedLetterID = ReceivedLetterAnswersToT.ReceivedLetterID) ON SentLetterT.SentLetterID = ReceivedLetterAnswersToT.AnswersToID
+#                 WHERE (((SentLetterT.Correlativo)=Forms!SentLetterF![txtCorrelativo]));
+#                 """
+
+
+
+a = {"a":"j"}
+
+print(list(a.values())[0])

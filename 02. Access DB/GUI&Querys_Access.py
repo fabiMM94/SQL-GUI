@@ -40,47 +40,66 @@ def QuerysExcecute(query):
 # Configuración de querys
 # -------------------------------
 
-ENAPLetter = """SELECT ReceivedLetterT.Correlativo
-        FROM CompanyT INNER JOIN ReceivedLetterT ON CompanyT.CompanyID = ReceivedLetterT.CompanyID
-        WHERE (((CompanyT.CompanyName)="ENAP REFINERÍAS S.A."));"""
-Company = """SELECT CompanyT.CompanyName
-            FROM ReceivedLetterT
-            INNER JOIN CompanyT ON ReceivedLetterT.CompanyID = CompanyT.CompanyID;"""
+# ENAPLetter = """SELECT ReceivedLetterT.Correlativo
+#         FROM CompanyT INNER JOIN ReceivedLetterT ON CompanyT.CompanyID = ReceivedLetterT.CompanyID
+#         WHERE (((CompanyT.CompanyName)="ENAP REFINERÍAS S.A."));"""
+# Company = """SELECT CompanyT.CompanyName
+#             FROM ReceivedLetterT
+#             INNER JOIN CompanyT ON ReceivedLetterT.CompanyID = CompanyT.CompanyID;"""
 
-GetAllComponents = """SELECT ComponentT.ComponentName, PowerStationT.PowerStationName, CompanyT.CompanyName 
-                   FROM CompanyT INNER JOIN (PowerStationT INNER JOIN ComponentT ON PowerStationT.PowerStationID = ComponentT.PowerStationID) ON CompanyT.CompanyID = PowerStationT.MarketParticipantID
-                   ORDER BY ComponentT.ComponentID;"""
-GetAllGenerators = """SELECT ComponentT.ComponentName, PowerStationT.PowerStationName, CompanyT.CompanyName
-                    FROM CompanyT INNER JOIN (PowerStationT INNER JOIN ComponentT ON PowerStationT.PowerStationID = ComponentT.PowerStationID) ON CompanyT.CompanyID = PowerStationT.MarketParticipantID
-                    WHERE (((ComponentT.ComponentTypeID)=1))
-                    ORDER BY ComponentT.ComponentID;"""
-ReceivedLetter = """SELECT SentLetterT.Correlativo
-                FROM ReceivedLetterT INNER JOIN (SentLetterT INNER JOIN SentLetterAnswersToT ON SentLetterT.SentLetterID = SentLetterAnswersToT.SentLetterID) ON ReceivedLetterT.ReceivedLetterID = SentLetterAnswersToT.AnswersToID;"""
-SentLetter = """SELECT ReceivedLetterT.Correlativo
-                FROM SentLetterT INNER JOIN (ReceivedLetterT INNER JOIN ReceivedLetterAnswersToT ON ReceivedLetterT.ReceivedLetterID = ReceivedLetterAnswersToT.ReceivedLetterID) ON SentLetterT.SentLetterID = ReceivedLetterAnswersToT.AnswersToID;
-                """
-date = """SELECT ReceivedLetterT.LetterDate
-            FROM ReceivedLetterT;"""
-next_company = """
-                SELECT 
-                    c.CompanyName,
-                    r.Correlativo,
-                    CAST(r.LetterDate AS DATE) AS LetterDate
-                FROM 
-                    ReceivedLetterT r
-                INNER JOIN 
-                    CompanyT c ON r.CompanyID = c.CompanyID
-                ORDER BY 
-                    r.Correlativo
-                """
+# GetAllComponents = """SELECT ComponentT.ComponentName, PowerStationT.PowerStationName, CompanyT.CompanyName 
+#                    FROM CompanyT INNER JOIN (PowerStationT INNER JOIN ComponentT ON PowerStationT.PowerStationID = ComponentT.PowerStationID) ON CompanyT.CompanyID = PowerStationT.MarketParticipantID
+#                    ORDER BY ComponentT.ComponentID;"""
+# GetAllGenerators = """SELECT ComponentT.ComponentName, PowerStationT.PowerStationName, CompanyT.CompanyName
+#                     FROM CompanyT INNER JOIN (PowerStationT INNER JOIN ComponentT ON PowerStationT.PowerStationID = ComponentT.PowerStationID) ON CompanyT.CompanyID = PowerStationT.MarketParticipantID
+#                     WHERE (((ComponentT.ComponentTypeID)=1))
+#                     ORDER BY ComponentT.ComponentID;"""
+# ReceivedLetter = """SELECT SentLetterT.Correlativo
+#                 FROM ReceivedLetterT INNER JOIN (SentLetterT INNER JOIN SentLetterAnswersToT ON SentLetterT.SentLetterID = SentLetterAnswersToT.SentLetterID) ON ReceivedLetterT.ReceivedLetterID = SentLetterAnswersToT.AnswersToID;"""
+# SentLetter = """SELECT ReceivedLetterT.Correlativo
+#                 FROM SentLetterT INNER JOIN (ReceivedLetterT INNER JOIN ReceivedLetterAnswersToT ON ReceivedLetterT.ReceivedLetterID = ReceivedLetterAnswersToT.ReceivedLetterID) ON SentLetterT.SentLetterID = ReceivedLetterAnswersToT.AnswersToID;
+#                 """
+# date = """SELECT ReceivedLetterT.LetterDate
+#             FROM ReceivedLetterT;"""
+# next_company = """
+#                 SELECT 
+#                     c.CompanyName,
+#                     r.Correlativo,
+#                     CAST(r.LetterDate AS DATE) AS LetterDate
+#                 FROM 
+#                     ReceivedLetterT r
+#                 INNER JOIN 
+#                     CompanyT c ON r.CompanyID = c.CompanyID
+#                 ORDER BY 
+#                     r.Correlativo
+#                 """
 
-
-
-
-
-
-
-
+GetCmponents = """SELECT ComponentT.ComponentName, PowerStationT.PowerStationName, CompanyT.CompanyName, ComponentT.ComponentID
+FROM CompanyT INNER JOIN (PowerStationT INNER JOIN ComponentT ON PowerStationT.PowerStationID = ComponentT.PowerStationID) ON CompanyT.CompanyID = PowerStationT.MarketParticipantID
+ORDER BY ComponentT.ComponentID;
+"""
+GetCommitments = """SELECT CompanyT.CompanyName AS Empresa, ComponentT.ComponentName AS Componente, EMTPModelT.EMTPModelTypeName AS ModeloEMTP, CommitmentInLetterT.CommittedDate AS FechaPropuesta
+FROM (((CommitmentInLetterT INNER JOIN ComponentT ON CommitmentInLetterT.ComponentID = ComponentT.ComponentID) INNER JOIN EMTPModelT ON CommitmentInLetterT.EMTPModelID = EMTPModelT.EMTPModelID) INNER JOIN ReceivedLetterT ON CommitmentInLetterT.ReceivedLetterID = ReceivedLetterT.ReceivedLetterID) INNER JOIN CompanyT ON ReceivedLetterT.CompanyID = CompanyT.CompanyID
+WHERE CommitmentInLetterT.CommittedDate IS NOT NULL;
+"""
+MissingModels = """SELECT Nz(Base.CompanyName, 'Empresa no encontrada') AS Empresa, Base.ComponentName AS Componente, EMTPModelT.EMTPModelTypeName AS EMTPModelFaltante
+FROM (SELECT ComponentT.ComponentID, ComponentT.ComponentName, CompanyT.CompanyName FROM ComponentT LEFT JOIN CompanyT ON ComponentT.MarketParticipantID = CompanyT.CompanyID)  AS Base, EMTPModelT
+WHERE NOT EXISTS (         SELECT 1         FROM ComponentInReceivedLetterT         WHERE              ComponentInReceivedLetterT.ComponentID = Base.ComponentID             AND ComponentInReceivedLetterT.EMTPModelID = EMTPModelT.EMTPModelID     );
+"""
+ReceivedComponents = """SELECT Nz(CompanyT.CompanyName, 'Empresa no encontrada') AS Empresa, ComponentT.ComponentName AS Componente, EMTPModelT.EMTPModelTypeName AS ModeloEMTP
+FROM ((ComponentInReceivedLetterT INNER JOIN ComponentT ON ComponentInReceivedLetterT.ComponentID = ComponentT.ComponentID) INNER JOIN EMTPModelT ON ComponentInReceivedLetterT.EMTPModelID = EMTPModelT.EMTPModelID) LEFT JOIN CompanyT ON ComponentT.MarketParticipantID = CompanyT.CompanyID;
+"""
+ReceivedModel = """SELECT Nz(CompanyT.CompanyName, 'Empresa no encontrada') AS Empresa, ComponentT.ComponentName AS Componente, EMTPModelT.EMTPModelTypeName AS ModeloEMTP, ReceivedLetterT.LetterDate AS FechaRecepcion
+FROM (((ComponentInReceivedLetterT INNER JOIN ComponentT ON ComponentInReceivedLetterT.ComponentID = ComponentT.ComponentID) INNER JOIN EMTPModelT ON ComponentInReceivedLetterT.EMTPModelID = EMTPModelT.EMTPModelID) INNER JOIN ReceivedLetterT ON ComponentInReceivedLetterT.ReceivedLetterID = ReceivedLetterT.ReceivedLetterID) LEFT JOIN CompanyT ON ComponentT.MarketParticipantID = CompanyT.CompanyID;
+"""
+ReceivedLetterAnswered = """SELECT SentLetterT.Correlativo
+FROM ReceivedLetterT INNER JOIN (SentLetterT INNER JOIN SentLetterAnswersToT ON SentLetterT.SentLetterID = SentLetterAnswersToT.SentLetterID) ON ReceivedLetterT.ReceivedLetterID = SentLetterAnswersToT.AnswersToID
+WHERE (((ReceivedLetterT.Correlativo)=[Forms]![ReceivedLetterF]![txtBoxCorrelativo]));
+"""
+SentLetterAnswered = """SELECT ReceivedLetterT.Correlativo, CompanyT.CompanyName
+FROM CompanyT INNER JOIN (SentLetterT INNER JOIN (ReceivedLetterT INNER JOIN ReceivedLetterAnswersToT ON ReceivedLetterT.ReceivedLetterID = ReceivedLetterAnswersToT.ReceivedLetterID) ON SentLetterT.SentLetterID = ReceivedLetterAnswersToT.AnswersToID) ON CompanyT.CompanyID = ReceivedLetterT.CompanyID
+WHERE (((SentLetterT.Correlativo)=[Forms]![SentLetterF]![txtCorrelativo]));
+"""
 
 
 

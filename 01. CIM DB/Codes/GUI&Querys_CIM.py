@@ -11,8 +11,10 @@ st.set_page_config(page_title="Editor de Datos SQL Server", layout="wide")
 st.title("Editor de Datos SQL Server")
 
 # Configuración de conexión a SQL Server
-SERVER = 'FMEDINA98JL\\SQLEXPRESS'
-DATABASE = 'red_prueba'
+SERVER  = 'NB-CD-DEE'
+DATABASE = 'red_prueba (1)' 
+#SERVER = 'FMEDINA98JL\\SQLEXPRESS'
+#DATABASE = 'red_prueba'
 DRIVER = 'ODBC Driver 17 for SQL Server'  # Ajusta según el driver que tengas instalado
 
 # Función para crear la conexión a la base de datos
